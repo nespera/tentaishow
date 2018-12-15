@@ -8,12 +8,12 @@ class BoardSpec extends Specification {
 
     "detect squares inside the board" in {
       val board = Board(2, 6)
-      board.isInside(Square(-1,0)) must beFalse
-      board.isInside(Square(0,-1)) must beFalse
-      board.isInside(Square(0,0)) must beTrue
-      board.isInside(Square(1,5)) must beTrue
-      board.isInside(Square(1,6)) must beFalse
-      board.isInside(Square(2,5)) must beFalse
+      board.contains(Square(-1,0)) must beFalse
+      board.contains(Square(0,-1)) must beFalse
+      board.contains(Square(0,0)) must beTrue
+      board.contains(Square(1,5)) must beTrue
+      board.contains(Square(1,6)) must beFalse
+      board.contains(Square(2,5)) must beFalse
     }
   }
 
@@ -23,6 +23,24 @@ class BoardSpec extends Specification {
       Square(0, 1).centre mustEqual Coordinate(1,3)
       Square(1, 0).centre mustEqual Coordinate(3,1)
       Square(1, 1).centre mustEqual Coordinate(3,3)
+    }
+
+    "be derived from a coordinate" in {
+      Square.from(Square(0, 0).centre) mustEqual Square(0,0)
+      Square.from(Square(0, 1).centre) mustEqual Square(0,1)
+      Square.from(Square(1, 0).centre) mustEqual Square(1,0)
+      Square.from(Square(1, 1).centre) mustEqual Square(1,1)
+
+      Square.from(Coordinate(0,0)) must throwAn[IllegalArgumentException]
+      Square.from(Coordinate(1,0)) must throwAn[IllegalArgumentException]
+      Square.from(Coordinate(0,1)) must throwAn[IllegalArgumentException]
+    }
+
+    "be able to be rotated about a coordinate" in {
+      Square(0,0).rotate(Coordinate(1,1)) mustEqual Square(0,0)
+      Square(0,0).rotate(Coordinate(1,2)) mustEqual Square(0,1)
+      Square(0,0).rotate(Coordinate(2,2)) mustEqual Square(1,1)
+      Square(0,0).rotate(Coordinate(3,1)) mustEqual Square(2,0)
     }
   }
 

@@ -18,8 +18,11 @@ import MathUtil._
 
 case class Board(height: Int, width: Int) {
 
+  val squares: Seq[Square] = for(r <- 0 until height; c <-0 until width)
+    yield Square(r,c)
+
   def contains(square: Square): Boolean = {
-    square.row >= 0 && square.row < height && square.col >= 0 && square.col < width
+    squares.contains(square)
   }
 }
 

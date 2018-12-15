@@ -22,17 +22,17 @@ case class Board(height: Int, width: Int) {
 }
 
 case class Square(row: Int, col: Int) {
-  def adjacent(coordinate: Coordinate) : Boolean = {
-     coordinate.rows().contains(row) && coordinate.cols().contains(col)
+  def centre : Coordinate = {
+     Coordinate((row * 2) + 1, (col * 2) + 1)
   }
 }
 
 case class Coordinate(x: Int, y: Int) {
 
-  def rows(): Seq[Int] = {
+  def rows: Seq[Int] = {
     if (x % 2 == 0) Seq(Math.floorDiv(x-2, 2), Math.floorDiv(x, 2)) else Seq(Math.floorDiv(x-1, 2))
   }
-  def cols(): Seq[Int] = {
+  def cols: Seq[Int] = {
     if (y % 2 == 0) Seq(Math.floorDiv(y-2, 2), Math.floorDiv(y, 2)) else Seq(Math.floorDiv(y-1, 2))
   }
 }

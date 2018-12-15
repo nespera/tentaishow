@@ -24,6 +24,12 @@ case class Board(height: Int, width: Int) {
   def contains(square: Square): Boolean = {
     squares.contains(square)
   }
+
+  //Note coordinates on the edge are excluded
+  def contains(coord: Coordinate): Boolean = {
+    val adjacent: Seq[Square] = for (r <- coord.rows; c <- coord.cols) yield Square(r,c)
+    adjacent.forall(square => this.contains(square))
+  }
 }
 
 case class Square(row: Int, col: Int) {

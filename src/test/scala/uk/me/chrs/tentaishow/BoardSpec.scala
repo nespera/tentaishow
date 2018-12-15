@@ -44,6 +44,18 @@ class BoardSpec extends Specification {
       Square.from(Coordinate(0,1)) must throwAn[IllegalArgumentException]
     }
 
+    "know if it is adjacent to a coordinate" in {
+      Square(1, 1).adjacentTo(Coordinate(3,3)) must beTrue
+      Square(1, 1).adjacentTo(Coordinate(2,2)) must beTrue
+      Square(1, 1).adjacentTo(Coordinate(4,4)) must beTrue
+      Square(1, 1).adjacentTo(Coordinate(2,4)) must beTrue
+
+      Square(1, 1).adjacentTo(Coordinate(1,3)) must beFalse
+      Square(1, 1).adjacentTo(Coordinate(2,5)) must beFalse
+      Square(1, 1).adjacentTo(Coordinate(1,4)) must beFalse
+      Square(1, 1).adjacentTo(Coordinate(2,1)) must beFalse
+    }
+
     "be able to be rotated about a coordinate" in {
       Square(0,0).rotate(Coordinate(1,1)) mustEqual Square(0,0)
       Square(0,0).rotate(Coordinate(1,2)) mustEqual Square(0,1)

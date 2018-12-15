@@ -43,6 +43,10 @@ case class Square(row: Int, col: Int) {
     val dy = coord.y - centre.y
     Square.from(Coordinate(centre.x + (2 * dx), centre.y + (2 * dy)))
   }
+
+  def adjacentTo(coord: Coordinate) : Boolean = {
+    Math.abs(coord.x - centre.x) <= 1 && Math.abs(coord.y - centre.y) <= 1
+  }
 }
 object Square {
   def from(coord: Coordinate): Square = {
@@ -67,4 +71,4 @@ sealed trait Colour
 case object White extends Colour
 case object Black extends Colour
 
-case class Star(colour: Colour, coordinate: Coordinate)
+case class Star(name: String, colour: Colour, coordinate: Coordinate)

@@ -19,8 +19,10 @@ class BoardSpec extends Specification {
     "detect coordinates inside the board" in {
       val board = Board(2,2)
       board.contains(Coordinate(0,0)) must beFalse
+      board.contains(Coordinate(0,2)) must beFalse
       board.contains(Coordinate(1,3)) must beTrue
       board.contains(Coordinate(2,2)) must beTrue
+      board.contains(Coordinate(4,2)) must beFalse
       board.contains(Coordinate(4,4)) must beFalse
     }
   }

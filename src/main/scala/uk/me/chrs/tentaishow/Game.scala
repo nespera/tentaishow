@@ -6,28 +6,35 @@ case class Game(board: Board, stars: Set[Star], state: Map[Square, Option[Star]]
   private val HORIZ = "‒"
   private val VERT  = "|"
 
-  def print(): Unit = {
-    for(r <- 0 until board.height) {
-      println(gridLine())
-      for (c <- 0 until board.width) {
-        printf(VERT)
-        val fill = state(Square(r, c)).map(star => star.name).getOrElse(" ")
-        printf("%2s", fill)
-      }
-      println(VERT)
+   override def toString: String = {
+    val s = new StringBuilder
+    for (r <- 0 until board.height) {
+      s.append(gridLine())
+      s.append(rowAsString(r))
     }
-    println(gridLine())
+    s.append(gridLine())
+    s.toString()
+   }
+
+  private def rowAsString(r: Int): String = {
+    val s = new StringBuilder
+    for (c <- 0 until board.width) {
+      val fill = state(Square(r, c)).map(star => star.name.take(2)).getOrElse(" ")
+      s.append(VERT + f"$fill%2s")
+    }
+    s.append(VERT + "\n")
+    s.toString()
   }
 
   private def gridLine(): String = {
-    (0 until board.width).map(i => POINT + HORIZ + HORIZ).mkString("") + POINT
+    (0 until board.width).map(i => POINT + HORIZ + HORIZ).mkString("") + POINT + "\n"
   }
 }
 
 object Game extends App {
 
   val game = init(Board(2,2), Set())
-  game.print()
+  Console.print(game)
 
   def init(board: Board, stars: Set[Star]): Game = {
     stars.find(s => !board.contains(s.coordinate))

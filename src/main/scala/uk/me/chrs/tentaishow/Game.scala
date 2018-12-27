@@ -1,5 +1,8 @@
 package uk.me.chrs.tentaishow
 
+import scala.collection.mutable.ListBuffer
+import scala.io.StdIn
+
 case class Game(board: Board, stars: Set[Star], state: Map[Square, Option[Star]]) {
 
   private val POINT = "•"
@@ -33,8 +36,15 @@ case class Game(board: Board, stars: Set[Star], state: Map[Square, Option[Star]]
 
 object Game extends App {
 
-  val game = init(Board(2,2), Set())
-  Console.print(game)
+  val game: Game = init(readLinesFromStdIn)
+  Console.println(game)
+
+  def init(lines: Seq[String]): Game = {
+    val trimmed = lines.map(_.trim).filter(_.nonEmpty)
+    val lengths = trimmed.map(_.trim.length).toSet
+    if (lengths.size > 1) throw new IllegalArgumentException("Input has lines of mismatched lengths")
+    init(Board(trimmed.size, lengths.head), Set())
+  }
 
   def init(board: Board, stars: Set[Star]): Game = {
     stars.find(s => !board.contains(s.coordinate))
@@ -47,5 +57,14 @@ object Game extends App {
 
     val initState = board.squares.map(sq => (sq, None)).toMap
     Game(board, stars, initState)
+  }
+
+  def readLinesFromStdIn: Seq[String] = {
+    val lines: ListBuffer[String] = ListBuffer()
+    var line = ""
+    while ( {line = StdIn.readLine(); line != null}) {
+      lines.append(line)
+    }
+    lines
   }
 }

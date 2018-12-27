@@ -23,6 +23,25 @@ class GameSpec extends Specification {
       Game.init(board, Set(Star("a", White, Coordinate(1,1)), Star("a", White, Coordinate(1,2)))) must throwAn[IllegalArgumentException]
     }
 
+    "not be initialized with lines of different lengths" in {
+      Game.init(Seq("..", "...")) must throwAn[IllegalArgumentException]
+    }
+
+    "be initialized with lines of equal lengths" in {
+      val game = Game.init(Seq("...", "..."))
+      game.board mustEqual Board(2, 3)
+    }
+
+    "ignore empty lines when initializing" in {
+      val game = Game.init(Seq("", "...", "...", ""))
+      game.board mustEqual Board(2, 3)
+    }
+
+    "ignore trailing whitespace when initializing" in {
+      val game = Game.init(Seq("  ", "...  ", "...", ""))
+      game.board mustEqual Board(2, 3)
+    }
+
     "be convertible to string with empty squares" in {
       val game = Game.init(Board(2, 2), Set())
       val asString = "•‒‒•‒‒•\n|  |  |\n•‒‒•‒‒•\n|  |  |\n•‒‒•‒‒•\n"

@@ -34,7 +34,7 @@ case class Game(board: Board, stars: Set[Star], state: Map[Square, Option[Star]]
   }
 
   private def gridLine(): String = {
-    (0 until board.width).map(i => POINT + HORIZ + HORIZ + HORIZ).mkString("") + POINT + "\n"
+    (0 until board.width).map(_ => POINT + HORIZ + HORIZ + HORIZ).mkString("") + POINT + "\n"
   }
 }
 
@@ -54,12 +54,12 @@ object Game extends App {
 
   def init(board: Board, stars: Set[Star]): Game = {
     stars.find(s => !board.contains(s.coordinate))
-      .foreach(s => throw new IllegalArgumentException("Initialized with Star not inside the board"))
+      .foreach(_ => throw new IllegalArgumentException("Initialized with Star not inside the board"))
 
     board.squares.find(square => {
       val adjacentStars = stars.filter(star => square.adjacentTo(star.coordinate))
       adjacentStars.size > 1
-    }).foreach(s => throw new IllegalArgumentException("Initialized with multiple stars adjacent to a single square"))
+    }).foreach(_ => throw new IllegalArgumentException("Initialized with multiple stars adjacent to a single square"))
 
     val initState = board.squares.map(sq => (sq, None)).toMap
     Game(board, stars, initState)
@@ -70,21 +70,24 @@ object Game extends App {
     for((line,row) <- lines.view.zipWithIndex) {
       for((char, col) <- line.toCharArray.zipWithIndex) {
         val centre = Square(row, col).centre
-        val optCoord = char.toLower match {
-          case '.' => None
-          case 'c' => Some(centre)
-          case 'b' => Some(centre.copy(x = centre.x + 1))
-          case 'r' => Some(centre.copy(y = centre.y + 1))
-          case 'd' => Some(centre.copy(x = centre.x + 1, y = centre.y + 1))
-          case _ => throw new IllegalArgumentException("Unrecognized character: " + char)
-        }
-        optCoord.foreach(coord => {
+        offsetByChar(centre, char).foreach(coord => {
           val colour = if (char.isUpper) Black else White
           stars.append(Star("a", colour, coord))
         })
       }
     }
     stars.toSet
+  }
+
+  private def offsetByChar(coord: Coordinate, char: Char): Option[Coordinate] = {
+    char.toLower match {
+      case '.' => None
+      case 'c' => Some(coord)
+      case 'b' => Some(coord.copy(x = coord.x + 1))
+      case 'r' => Some(coord.copy(y = coord.y + 1))
+      case 'd' => Some(coord.copy(x = coord.x + 1, y = coord.y + 1))
+      case _ => throw new IllegalArgumentException("Unrecognized character: " + char)
+    }
   }
 
   private def readLinesFromStdIn: Seq[String] = {

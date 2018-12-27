@@ -66,9 +66,15 @@ case class Coordinate(x: Int, y: Int) {
   }
 }
 
-sealed trait Colour
+sealed trait Colour {
+  val symbol: String
+}
 
-case object White extends Colour
-case object Black extends Colour
+case object White extends Colour {
+  override val symbol: String = "○"
+}
+case object Black extends Colour {
+  override val symbol: String = "●"
+}
 
 case class Star(name: String, colour: Colour, coordinate: Coordinate)

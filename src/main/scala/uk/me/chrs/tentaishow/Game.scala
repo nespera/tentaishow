@@ -69,7 +69,8 @@ case class Game(board: Board, stars: Set[Star], state: Map[Square, Option[Star]]
 object Game extends App {
 
   val game: Game = init(readLinesFromStdIn)
-  Console.println(game)
+  Console.println("Solving:\n")
+  Console.println(game.starMap)
 
   def init(lines: Seq[String]): Game = {
     val trimmed = lines.map(_.trim).filter(_.nonEmpty)

@@ -50,6 +50,10 @@ class GameSpec extends Specification {
       Game.init(Seq("D.", "..")).stars.map(s => s.coordinate) mustEqual Set(Coordinate(2,2))
     }
 
+    "be convertible to a star map" in {
+      Game.init(Seq("cC", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n| ○ | ● |\n·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
+    }
+
     "be convertible to string with empty squares" in {
       val game = Game.init(Board(2, 2), Set())
       val asString = "·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"

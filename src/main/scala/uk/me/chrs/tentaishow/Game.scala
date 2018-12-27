@@ -20,7 +20,35 @@ case class Game(board: Board, stars: Set[Star], state: Map[Square, Option[Star]]
   }
 
   def starMap: String = {
-    ""
+    val s = new StringBuilder
+    for (x <- 0 until board.height*2 + 1) {
+      s.append(starLine(x))
+      s.append("\n")
+    }
+    s.toString()
+  }
+
+  private def starLine(x: Int): String = {
+    val s = new StringBuilder
+    for (y <- 0 until board.width*2 + 1) {
+      val matchingStar = stars.find(s => s.coordinate == Coordinate(x,y))
+      s.append(matchingStar match {
+        case Some(star) => star.colour.symbol
+        case _ => starPoint(x,y)
+      })
+      s.append(if (x%2 == 0) HORIZ else " ")
+    }
+    s.toString().dropRight(1)
+  }
+
+  private def starPoint(x: Int, y: Int): String = {
+    val xEven = x%2 == 0
+    val yEven = y%2 == 0
+    if (xEven) {
+      if (yEven) POINT else HORIZ
+    } else {
+      if (yEven) VERT else " "
+    }
   }
 
   private def rowAsString(r: Int): String = {

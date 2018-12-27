@@ -52,6 +52,10 @@ class GameSpec extends Specification {
 
     "be convertible to a star map" in {
       Game.init(Seq("cC", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n| ○ | ● |\n·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
+      Game.init(Seq("bB", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒○‒·‒●‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
+      Game.init(Seq("r.", "R.")).starMap mustEqual "·‒‒‒·‒‒‒·\n|   ○   |\n·‒‒‒·‒‒‒·\n|   ●   |\n·‒‒‒·‒‒‒·\n"
+      Game.init(Seq("d.", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒○‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
+      Game.init(Seq("D.", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒●‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
     }
 
     "be convertible to string with empty squares" in {

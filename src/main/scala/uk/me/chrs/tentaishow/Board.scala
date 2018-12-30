@@ -16,7 +16,7 @@ import MathUtil._
 
  */
 
-case class Board(height: Int, width: Int) {
+case class Board(height: Int, width: Int, stars: Set[Star]) {
 
   val squares: Seq[Square] = for(r <- 0 until height; c <-0 until width)
     yield Square(r,c)

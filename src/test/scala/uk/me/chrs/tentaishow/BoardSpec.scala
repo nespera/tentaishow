@@ -7,7 +7,7 @@ class BoardSpec extends Specification {
   "A board" should {
 
     "detect squares inside the board" in {
-      val board = Board(2, 6)
+      val board = Board(2, 6, Set())
       board.contains(Square(-1,0)) must beFalse
       board.contains(Square(0,-1)) must beFalse
       board.contains(Square(0,0)) must beTrue
@@ -17,7 +17,7 @@ class BoardSpec extends Specification {
     }
 
     "detect coordinates inside the board" in {
-      val board = Board(2,2)
+      val board = Board(2,2, Set())
       board.contains(Coordinate(0,0)) must beFalse
       board.contains(Coordinate(0,2)) must beFalse
       board.contains(Coordinate(1,3)) must beTrue

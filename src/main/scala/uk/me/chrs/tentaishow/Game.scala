@@ -3,7 +3,7 @@ package uk.me.chrs.tentaishow
 import scala.collection.mutable.ListBuffer
 import scala.io.StdIn
 
-case class Game(board: Board, stars: Set[Star], state: Map[Square, Option[Star]]) {
+case class Game(board: Board, state: Map[Square, Option[Star]]) {
 
   private val POINT = "·"
   private val HORIZ = "‒"
@@ -31,7 +31,7 @@ case class Game(board: Board, stars: Set[Star], state: Map[Square, Option[Star]]
   private def starLine(x: Int): String = {
     val s = new StringBuilder
     for (y <- 0 until board.width*2 + 1) {
-      val matchingStar = stars.find(s => s.coordinate == Coordinate(x,y))
+      val matchingStar = board.stars.find(s => s.coordinate == Coordinate(x,y))
       s.append(matchingStar match {
         case Some(star) => star.colour.symbol
         case _ => starPoint(x,y)
@@ -76,22 +76,22 @@ object Game extends App {
     val trimmed = lines.map(_.trim).filter(_.nonEmpty)
     val lengths = trimmed.map(_.trim.length).toSet
     if (lengths.size > 1) throw new IllegalArgumentException("Input has lines of mismatched lengths")
-    val board = Board(trimmed.size, lengths.head)
     val stars = parseStars(trimmed)
-    init(board, stars)
+    val board = Board(trimmed.size, lengths.head, stars)
+    init(board)
   }
 
-  def init(board: Board, stars: Set[Star]): Game = {
-    stars.find(s => !board.contains(s.coordinate))
+  def init(board: Board): Game = {
+    board.stars.find(s => !board.contains(s.coordinate))
       .foreach(_ => throw new IllegalArgumentException("Initialized with Star not inside the board"))
 
     board.squares.find(square => {
-      val adjacentStars = stars.filter(star => square.adjacentTo(star.coordinate))
+      val adjacentStars = board.stars.filter(star => square.adjacentTo(star.coordinate))
       adjacentStars.size > 1
     }).foreach(_ => throw new IllegalArgumentException("Initialized with multiple stars adjacent to a single square"))
 
     val initState = board.squares.map(sq => (sq, None)).toMap
-    Game(board, stars, initState)
+    Game(board, initState)
   }
 
   private def parseStars(lines: Seq[String]): Set[Star] = {

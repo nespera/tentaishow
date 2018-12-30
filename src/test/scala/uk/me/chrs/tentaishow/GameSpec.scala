@@ -6,53 +6,6 @@ class GameSpec extends Specification {
 
   "A game" should {
 
-    "not be initialized with lines of different lengths" in {
-      Game.init(Seq("..", "...")) must throwAn[IllegalArgumentException]
-    }
-
-    "be initialized with lines of equal lengths" in {
-      val game = Game.init(Seq("...", "..."))
-      game.board mustEqual Board(2, 3, Set())
-    }
-
-    "ignore empty lines when initializing" in {
-      val game = Game.init(Seq("", "...", "...", ""))
-      game.board mustEqual Board(2, 3, Set())
-    }
-
-    "ignore trailing whitespace when initializing" in {
-      val game = Game.init(Seq("  ", "...  ", "...", ""))
-      game.board mustEqual Board(2, 3, Set())
-    }
-
-    "be initialized with letters" in {
-      Game.init(Seq("cC", "..")).board.stars.map(_.coordinate) mustEqual Set(Coordinate(1,1), Coordinate(1,3))
-      Game.init(Seq("bB", "..")).board.stars.map(_.coordinate) mustEqual Set(Coordinate(2,1), Coordinate(2,3))
-      Game.init(Seq("r.", "R.")).board.stars.map(_.coordinate) mustEqual Set(Coordinate(1,2), Coordinate(3,2))
-      Game.init(Seq("d.", "..")).board.stars.map(_.coordinate) mustEqual Set(Coordinate(2,2))
-      Game.init(Seq("D.", "..")).board.stars.map(_.coordinate) mustEqual Set(Coordinate(2,2))
-    }
-
-    "be initialized with stars with names starting a0,b0" in {
-      val stars: Set[Star] = Game.init(Seq("cC")).board.stars
-      val names: Set[String] = stars.map(_.name)
-      names mustEqual Set("a0", "b0")
-    }
-
-    "be initialized with stars that have different names" in {
-      val stars: Set[Star] = Game.init(Seq("cCcCcC","cCcCcC","cCcCcC","cCcCcC","cCcCcC")).board.stars
-      val names: Set[String] = stars.map(_.name)
-      names.size mustEqual stars.size
-    }
-    
-    "be convertible to a star map" in {
-      Game.init(Seq("cC", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n| ○ | ● |\n·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
-      Game.init(Seq("bB", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒○‒·‒●‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
-      Game.init(Seq("r.", "R.")).starMap mustEqual "·‒‒‒·‒‒‒·\n|   ○   |\n·‒‒‒·‒‒‒·\n|   ●   |\n·‒‒‒·‒‒‒·\n"
-      Game.init(Seq("d.", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒○‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
-      Game.init(Seq("D.", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒●‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
-    }
-
     "be convertible to string with empty squares" in {
       val game = Game.init(Board(2, 2, Set()))
       val asString = "·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"

@@ -40,6 +40,54 @@ class BoardSpec extends Specification {
       Board(2, 2, Set(Star("a", White, Coordinate(1,1)), Star("a", White, Coordinate(1,3)))).validate()
       Board(2, 2, Set(Star("a", White, Coordinate(1,1)), Star("a", White, Coordinate(1,2)))).validate() must throwAn[IllegalArgumentException]
     }
+
+    "not be initialized with lines of different lengths" in {
+      Board.parse(Seq("..", "...")) must throwAn[IllegalArgumentException]
+    }
+
+    "be initialized with lines of equal lengths" in {
+      val board = Board.parse(Seq("...", "..."))
+      board mustEqual Board(2, 3, Set())
+    }
+
+    "ignore empty lines when initializing" in {
+      val board = Board.parse(Seq("", "...", "...", ""))
+      board mustEqual Board(2, 3, Set())
+    }
+
+    "ignore trailing whitespace when initializing" in {
+      val board = Board.parse(Seq("  ", "...  ", "...", ""))
+      board mustEqual Board(2, 3, Set())
+    }
+
+    "be initialized with letters" in {
+      Board.parse(Seq("cC", "..")).stars.map(_.coordinate) mustEqual Set(Coordinate(1,1), Coordinate(1,3))
+      Board.parse(Seq("bB", "..")).stars.map(_.coordinate) mustEqual Set(Coordinate(2,1), Coordinate(2,3))
+      Board.parse(Seq("r.", "R.")).stars.map(_.coordinate) mustEqual Set(Coordinate(1,2), Coordinate(3,2))
+      Board.parse(Seq("d.", "..")).stars.map(_.coordinate) mustEqual Set(Coordinate(2,2))
+      Board.parse(Seq("D.", "..")).stars.map(_.coordinate) mustEqual Set(Coordinate(2,2))
+    }
+
+    "be initialized with stars with names starting a0,b0" in {
+      val stars: Set[Star] = Board.parse(Seq("cC")).stars
+      val names: Set[String] = stars.map(_.name)
+      names mustEqual Set("a0", "b0")
+    }
+
+    "be initialized with stars that have different names" in {
+      val stars: Set[Star] = Board.parse(Seq("cCcCcC","cCcCcC","cCcCcC","cCcCcC","cCcCcC")).stars
+      val names: Set[String] = stars.map(_.name)
+      names.size mustEqual stars.size
+    }
+
+    "be convertible to string" in {
+      Board.parse(Seq("cC", "..")).toString mustEqual "·‒‒‒·‒‒‒·\n| ○ | ● |\n·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
+      Board.parse(Seq("bB", "..")).toString mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒○‒·‒●‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
+      Board.parse(Seq("r.", "R.")).toString mustEqual "·‒‒‒·‒‒‒·\n|   ○   |\n·‒‒‒·‒‒‒·\n|   ●   |\n·‒‒‒·‒‒‒·\n"
+      Board.parse(Seq("d.", "..")).toString mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒○‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
+      Board.parse(Seq("D.", "..")).toString mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒●‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
+    }
+
   }
 
   "A square" should {

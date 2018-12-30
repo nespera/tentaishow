@@ -95,17 +95,21 @@ object Game extends App {
   }
 
   private def parseStars(lines: Seq[String]): Set[Star] = {
+    val labels = for (i <- 0 to 9; a <- 'a' to 'z') yield "" + a + i
     val stars = new ListBuffer[Star]
     for((line,row) <- lines.view.zipWithIndex) {
       for((char, col) <- line.toCharArray.zipWithIndex) {
         val centre = Square(row, col).centre
         offsetByChar(centre, char).foreach(coord => {
-          val colour = if (char.isUpper) Black else White
-          stars.append(Star("a", colour, coord))
+          stars.append(Star(labels(stars.size), colourFromChar(char), coord))
         })
       }
     }
     stars.toSet
+  }
+
+  private def colourFromChar(char: Char) = {
+    if (char.isUpper) Black else White
   }
 
   private def offsetByChar(coord: Coordinate, char: Char): Option[Coordinate] = {

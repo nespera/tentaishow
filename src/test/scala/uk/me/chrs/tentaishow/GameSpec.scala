@@ -43,13 +43,25 @@ class GameSpec extends Specification {
     }
 
     "be initialized with letters" in {
-      Game.init(Seq("cC", "..")).stars.map(s => s.coordinate) mustEqual Set(Coordinate(1,1), Coordinate(1,3))
-      Game.init(Seq("bB", "..")).stars.map(s => s.coordinate) mustEqual Set(Coordinate(2,1), Coordinate(2,3))
-      Game.init(Seq("r.", "R.")).stars.map(s => s.coordinate) mustEqual Set(Coordinate(1,2), Coordinate(3,2))
-      Game.init(Seq("d.", "..")).stars.map(s => s.coordinate) mustEqual Set(Coordinate(2,2))
-      Game.init(Seq("D.", "..")).stars.map(s => s.coordinate) mustEqual Set(Coordinate(2,2))
+      Game.init(Seq("cC", "..")).stars.map(_.coordinate) mustEqual Set(Coordinate(1,1), Coordinate(1,3))
+      Game.init(Seq("bB", "..")).stars.map(_.coordinate) mustEqual Set(Coordinate(2,1), Coordinate(2,3))
+      Game.init(Seq("r.", "R.")).stars.map(_.coordinate) mustEqual Set(Coordinate(1,2), Coordinate(3,2))
+      Game.init(Seq("d.", "..")).stars.map(_.coordinate) mustEqual Set(Coordinate(2,2))
+      Game.init(Seq("D.", "..")).stars.map(_.coordinate) mustEqual Set(Coordinate(2,2))
     }
 
+    "be initialized with stars with names starting a0,b0" in {
+      val stars: Set[Star] = Game.init(Seq("cC")).stars
+      val names: Set[String] = stars.map(_.name)
+      names mustEqual Set("a0", "b0")
+    }
+
+    "be initialized with stars that have different names" in {
+      val stars: Set[Star] = Game.init(Seq("cCcCcC","cCcCcC","cCcCcC","cCcCcC","cCcCcC")).stars
+      val names: Set[String] = stars.map(_.name)
+      names.size mustEqual stars.size
+    }
+    
     "be convertible to a star map" in {
       Game.init(Seq("cC", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n| ○ | ● |\n·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
       Game.init(Seq("bB", "..")).starMap mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒○‒·‒●‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"

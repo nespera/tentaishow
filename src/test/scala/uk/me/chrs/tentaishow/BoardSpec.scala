@@ -25,6 +25,21 @@ class BoardSpec extends Specification {
       board.contains(Coordinate(4,2)) must beFalse
       board.contains(Coordinate(4,4)) must beFalse
     }
+
+    "not be valid with stars not inside the board" in {
+      Board(2, 2, Set()).validate()
+      Board(2, 2, Set(Star("a", White, Coordinate(1,1)))).validate()
+      Board(2, 2, Set(Star("a", White, Coordinate(2,2)))).validate()
+      Board(2, 2, Set(Star("a", White, Coordinate(3,3)))).validate()
+      Board(2, 2, Set(Star("a", White, Coordinate(0,2)))).validate() must throwAn[IllegalArgumentException]
+      Board(2, 2, Set(Star("a", White, Coordinate(4,2)))).validate() must throwAn[IllegalArgumentException]
+    }
+
+    "not be valid with multiple stars next to single square" in {
+      Board(2, 2, Set()).validate()
+      Board(2, 2, Set(Star("a", White, Coordinate(1,1)), Star("a", White, Coordinate(1,3)))).validate()
+      Board(2, 2, Set(Star("a", White, Coordinate(1,1)), Star("a", White, Coordinate(1,2)))).validate() must throwAn[IllegalArgumentException]
+    }
   }
 
   "A square" should {

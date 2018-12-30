@@ -82,17 +82,11 @@ object Game extends App {
   }
 
   def init(board: Board): Game = {
-    board.stars.find(s => !board.contains(s.coordinate))
-      .foreach(_ => throw new IllegalArgumentException("Initialized with Star not inside the board"))
-
-    board.squares.find(square => {
-      val adjacentStars = board.stars.filter(star => square.adjacentTo(star.coordinate))
-      adjacentStars.size > 1
-    }).foreach(_ => throw new IllegalArgumentException("Initialized with multiple stars adjacent to a single square"))
-
+    board.validate
     val initState = board.squares.map(sq => (sq, None)).toMap
     Game(board, initState)
   }
+
 
   private def parseStars(lines: Seq[String]): Set[Star] = {
     val labels = for (i <- 0 to 9; a <- 'a' to 'z') yield "" + a + i

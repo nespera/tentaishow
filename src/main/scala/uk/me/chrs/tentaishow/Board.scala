@@ -30,6 +30,16 @@ case class Board(height: Int, width: Int, stars: Set[Star]) {
     val adjacent: Seq[Square] = for (r <- coord.rows; c <- coord.cols) yield Square(r,c)
     adjacent.forall(square => this.contains(square))
   }
+
+  def validate(): Unit = {
+    stars.find(s => !contains(s.coordinate))
+      .foreach(_ => throw new IllegalArgumentException("Initialized with Star not inside the board"))
+
+    squares.find(square => {
+      val adjacentStars = stars.filter(star => square.adjacentTo(star.coordinate))
+      adjacentStars.size > 1
+    }).foreach(_ => throw new IllegalArgumentException("Initialized with multiple stars adjacent to a single square"))
+  }
 }
 
 case class Square(row: Int, col: Int) {

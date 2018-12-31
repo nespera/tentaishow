@@ -82,5 +82,15 @@ class GameSpec extends Specification {
       val solved = game.solve
       solved.isComplete must beTrue
     }
+
+    "Be able to calculate reachable stars from a square" in {
+      val game = Game.init(Board.parse(Seq("cc.", ".c."))).fillGimmes
+      val starA = game.board.adjacentStars(Square(0, 0)).head
+      val starB = game.board.adjacentStars(Square(0, 1)).head
+      val starC = game.board.adjacentStars(Square(1, 1)).head
+      game.reachable(Square(0,0)) mustEqual Set(starA)
+      game.reachable(Square(0,2)) mustEqual Set(starB, starC)
+      game.reachable(Square(1,0)) mustEqual Set(starA, starC)
+    }
   }
 }

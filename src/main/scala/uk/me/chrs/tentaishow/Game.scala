@@ -1,5 +1,6 @@
 package uk.me.chrs.tentaishow
 
+import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.io.StdIn
 
@@ -38,6 +39,24 @@ case class Game(board: Board, state: Map[Square, Option[Star]]) {
       s.append("\n")
     }
     s.toString()
+  }
+
+  //Which stars are reachable from the given square, assuming gimmes are already filled?
+  def reachable(square: Square): Set[Star] = {
+    val expanded = expandReachable(Set(square))
+    state.filter(s => expanded.contains(s._1)).values.flatten.toSet
+  }
+
+  @tailrec
+  private def expandReachable(squares: Set[Square]): Set[Square] = {
+    val empty = state.filter(s => squares.contains(s._1) && s._2.isEmpty)
+    val besideEmpty = empty.flatMap(s => board.adjacentSquares(s._1))
+    val expanded = squares ++ besideEmpty
+    if (expanded.size == squares.size){
+      squares
+    } else {
+      expandReachable(expanded)
+    }
   }
 
   private def rowAsString(r: Int): String = {

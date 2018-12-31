@@ -28,6 +28,18 @@ case class Game(board: Board, state: Map[Square, Option[Star]]) {
     s.toString()
   }
 
+  def asImage: String = {
+    val s = new StringBuilder
+    for (r <- 0 until board.height) {
+      for (c <- 0 until board.width) {
+        val fill = state(Square(r, c)).map(star => star.colour.fill).getOrElse(" ")
+        s.append(fill + " ")
+      }
+      s.append("\n")
+    }
+    s.toString()
+  }
+
   private def rowAsString(r: Int): String = {
     val s = new StringBuilder
     for (c <- 0 until board.width) {
@@ -56,6 +68,7 @@ object Game extends App {
 
   Console.println("Result:\n")
   Console.println(solved.toString + "\n")
+  Console.println(solved.asImage + "\n")
 
   Console.println(if (solved.isComplete) "Complete" else "FAILED TO COMPLETE")
 

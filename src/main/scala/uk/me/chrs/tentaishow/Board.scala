@@ -64,7 +64,7 @@ case class Board(height: Int, width: Int, stars: Set[Star]) {
     for (y <- 0 until width*2 + 1) {
       val matchingStar = stars.find(s => s.coordinate == Coordinate(x,y))
       s.append(matchingStar match {
-        case Some(star) => star.colour.symbol
+        case Some(star) => star.colour.starSymbol
         case _ => stringPoint(x,y)
       })
       s.append(if (x%2 == 0) HORIZ else " ")
@@ -168,14 +168,17 @@ case class Coordinate(x: Int, y: Int) {
 }
 
 sealed trait Colour {
-  val symbol: String
+  val starSymbol: String
+  val fill: String
 }
 
 case object White extends Colour {
-  override val symbol: String = "○"
+  override val starSymbol: String = "○"
+  override val fill: String = "□"
 }
 case object Black extends Colour {
-  override val symbol: String = "●"
+  override val starSymbol: String = "●"
+  override val fill: String = "■"
 }
 
 case class Star(name: String, colour: Colour, coordinate: Coordinate)

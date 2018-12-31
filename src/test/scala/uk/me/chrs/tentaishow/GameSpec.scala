@@ -36,6 +36,20 @@ class GameSpec extends Specification {
       newGame.toString mustEqual  asString
     }
 
+    "be convertible to image" in {
+      val starA = Star("a", White, Coordinate(1,2))
+      val starB = Star("b", Black, Coordinate(3,2))
+
+      val game = Game.init(Board(2, 2, Set(starA, starB)))
+      val newState = (game.state + (Square(0,0) -> Some(starA))) +
+        (Square(1,0) -> Some(starB)) +
+        (Square(1,1) -> Some(starB))
+      val newGame = game.copy(state = newState)
+
+      val asString = "□   \n■ ■ \n"
+      newGame.asImage mustEqual  asString
+    }
+
     "Know when it is not complete" in {
       val starA = Star("a", White, Coordinate(1,1))
       val starB = Star("b", Black, Coordinate(3,3))

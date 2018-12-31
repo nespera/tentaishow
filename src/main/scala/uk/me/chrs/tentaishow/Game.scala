@@ -31,8 +31,8 @@ case class Game(board: Board, state: Map[Square, Option[Star]]) {
     val s = new StringBuilder
     for (r <- 0 until board.height) {
       for (c <- 0 until board.width) {
-        val fill = state(Square(r, c)).map(star => star.colour.fill).getOrElse(" ")
-        s.append(fill + " ")
+        val fill = state(Square(r, c)).map(star => star.colour.fill).getOrElse("  ")
+        s.append(fill)
       }
       s.append("\n")
     }

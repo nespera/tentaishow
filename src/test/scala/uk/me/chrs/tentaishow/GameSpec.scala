@@ -46,7 +46,7 @@ class GameSpec extends Specification {
         (Square(1,1) -> Some(starB))
       val newGame = game.copy(state = newState)
 
-      val asString = "□   \n■ ■ \n"
+      val asString = s"${White.fill}  \n${Black.fill}${Black.fill}\n"
       newGame.asImage mustEqual  asString
     }
 

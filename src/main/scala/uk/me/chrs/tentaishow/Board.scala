@@ -174,11 +174,11 @@ sealed trait Colour {
 
 case object White extends Colour {
   override val starSymbol: String = "○"
-  override val fill: String = "□"
+  override val fill: String = Console.CYAN_B + "  " + Console.RESET
 }
 case object Black extends Colour {
   override val starSymbol: String = "●"
-  override val fill: String = "■"
+  override val fill: String = Console.BLACK_B +  "  " + Console.RESET
 }
 
 case class Star(name: String, colour: Colour, coordinate: Coordinate)

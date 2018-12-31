@@ -88,6 +88,13 @@ class BoardSpec extends Specification {
       Board.parse(Seq("D.", "..")).toString mustEqual "·‒‒‒·‒‒‒·\n|   |   |\n·‒‒‒●‒‒‒·\n|   |   |\n·‒‒‒·‒‒‒·\n"
     }
 
+    "be able to find squares adjacent to another" in {
+      val board = Board.parse(Seq("..", ".."))
+      board.adjacentSquares(Square(0,0)) mustEqual Set(Square(0,1), Square(1, 0))
+
+      val tiny = Board.parse(Seq("."))
+      tiny.adjacentSquares(Square(0,0)) mustEqual Set()
+    }
   }
 
   "A square" should {

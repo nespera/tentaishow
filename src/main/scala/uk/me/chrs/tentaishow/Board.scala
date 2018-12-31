@@ -46,6 +46,10 @@ case class Board(height: Int, width: Int, stars: Set[Star]) {
     stars.filter(star => square.adjacentTo(star.coordinate))
   }
 
+  def adjacentSquares(square: Square): Set[Square] = {
+    squares.filter(s => s.adjacentTo(square) && s != square).toSet
+  }
+
   override def toString: String = {
     val s = new StringBuilder
     for (x <- 0 until height*2 + 1) {

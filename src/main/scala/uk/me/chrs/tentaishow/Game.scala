@@ -9,14 +9,12 @@ case class Game(board: Board, state: Map[Square, Option[Star]]) {
 
   def isComplete: Boolean = state.forall(x => x._2.isDefined)
 
+  def countComplete: Int = state.count(x => x._2.isDefined)
+
   def fillGimmes: Game = {
     val gimmes = board.squares.map(sq => sq -> board.adjacentStars(sq).headOption)
       .filter(x => x._2.isDefined)
     this.copy(state = this.state ++ gimmes)
-  }
-
-  def solve: Game = {
-    fillGimmes
   }
 
   override def toString: String = {
@@ -49,14 +47,19 @@ case class Game(board: Board, state: Map[Square, Option[Star]]) {
 
   @tailrec
   private def expandReachable(squares: Set[Square]): Set[Square] = {
-    val empty = state.filter(s => squares.contains(s._1) && s._2.isEmpty)
-    val besideEmpty = empty.flatMap(s => board.adjacentSquares(s._1))
+    val empty = state.filter(s => squares.contains(s._1) && s._2.isEmpty).keys
+    val besideEmpty = empty.flatMap(board.adjacentSquares)
     val expanded = squares ++ besideEmpty
     if (expanded.size == squares.size){
       squares
     } else {
       expandReachable(expanded)
     }
+  }
+
+  def mirrorIsEmpty(square: Square, star: Star): Boolean = {
+    val mirror = square.rotate(star.coordinate)
+    board.contains(mirror) && state(mirror).isEmpty
   }
 
   private def rowAsString(r: Int): String = {
@@ -83,13 +86,40 @@ object Game extends App {
 
   Console.println("Solving:\n")
   Console.println(game.board.toString + "\n")
-  val solved = game.solve
+  val solved = Game.solve(game)
 
   Console.println("Result:\n")
   Console.println(solved.toString + "\n")
   Console.println(solved.asImage + "\n")
 
   Console.println(if (solved.isComplete) "Complete" else "FAILED TO COMPLETE")
+
+  def solve(game: Game): Game = {
+    solveSteps(game.fillGimmes)
+  }
+
+  @tailrec
+  private def solveSteps(game: Game): Game = {
+    val next = fillUnique(game)
+    if (next.isComplete || next.countComplete == game.countComplete) next else solveSteps(next)
+  }
+
+  private def fillUnique(start: Game): Game = {
+    var game: Game = start
+
+    val empty = game.state.filter(_._2.isEmpty).keys
+    for (square <- empty) {
+      val possibleStars = game.reachable(square).filter(star => {
+        game.mirrorIsEmpty(square, star)
+      })
+      if (possibleStars.size == 1){
+        val star = possibleStars.head
+        val mirror = square.rotate(star.coordinate)
+        game = game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
+      }
+    }
+    game
+  }
 
   def init(board: Board): Game = {
     board.validate()

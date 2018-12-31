@@ -35,5 +35,25 @@ class GameSpec extends Specification {
       val asString = "·‒‒‒·‒‒‒·\n|aaa|   |\n·‒‒‒·‒‒‒·\n|   |  b|\n·‒‒‒·‒‒‒·\n"
       newGame.toString mustEqual  asString
     }
+
+    "Know when it is not complete" in {
+      val starA = Star("a", White, Coordinate(1,1))
+      val starB = Star("b", Black, Coordinate(3,3))
+
+      val game = Game.init(Board(2, 2, Set(starA, starB)))
+
+      game.isComplete must beFalse
+    }
+
+    "Know when it is complete" in {
+      val starA = Star("a", White, Coordinate(2,2))
+
+      val game = Game.init(Board(2, 2, Set(starA)))
+      val newState = game.state.map(x => x._1 -> Some(starA))
+      val newGame = game.copy(state = newState)
+
+      newGame.isComplete must beTrue
+    }
+
   }
 }

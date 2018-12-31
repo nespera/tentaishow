@@ -4,8 +4,9 @@ import scala.collection.mutable.ListBuffer
 import scala.io.StdIn
 
 case class Game(board: Board, state: Map[Square, Option[Star]]) {
-
   import Board._
+
+  def isComplete: Boolean = state.forall(x => x._2.isDefined)
 
   override def toString: String = {
     val s = new StringBuilder

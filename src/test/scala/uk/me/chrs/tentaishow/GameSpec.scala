@@ -55,5 +55,11 @@ class GameSpec extends Specification {
       newGame.isComplete must beTrue
     }
 
+    "Be able to fill in the initial gimmes (squares adjacent to a star)" in {
+      val game = Game.init(Board.parse(Seq("d.", "..")))
+      game.isComplete must beFalse
+      val withGimmes = game.fillGimmes
+      withGimmes.isComplete must beTrue
+    }
   }
 }

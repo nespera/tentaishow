@@ -8,6 +8,16 @@ case class Game(board: Board, state: Map[Square, Option[Star]]) {
 
   def isComplete: Boolean = state.forall(x => x._2.isDefined)
 
+  def fillGimmes: Game = {
+    val gimmes = board.squares.map(sq => sq -> board.stars.find(star => sq.adjacentTo(star.coordinate)))
+      .filter(x => x._2.isDefined)
+    this.copy(state = this.state ++ gimmes)
+  }
+
+  def solve: Game = {
+    fillGimmes
+  }
+
   override def toString: String = {
     val s = new StringBuilder
     for (r <- 0 until board.height) {
@@ -42,6 +52,9 @@ object Game extends App {
 
   Console.println("Solving:\n")
   Console.println(game.board.toString)
+  Console.println()
+  Console.println("Result:\n")
+  Console.println(game.solve.toString)
 
   def init(board: Board): Game = {
     board.validate()

@@ -9,7 +9,7 @@ case class Game(board: Board, state: Map[Square, Option[Star]]) {
   def isComplete: Boolean = state.forall(x => x._2.isDefined)
 
   def fillGimmes: Game = {
-    val gimmes = board.squares.map(sq => sq -> board.stars.find(star => sq.adjacentTo(star.coordinate)))
+    val gimmes = board.squares.map(sq => sq -> board.adjacentStars(sq).headOption)
       .filter(x => x._2.isDefined)
     this.copy(state = this.state ++ gimmes)
   }

@@ -38,10 +38,12 @@ case class Board(height: Int, width: Int, stars: Set[Star]) {
     stars.find(s => !contains(s.coordinate))
       .foreach(_ => throw new IllegalArgumentException("Initialized with Star not inside the board"))
 
-    squares.find(square => {
-      val adjacentStars = stars.filter(star => square.adjacentTo(star.coordinate))
-      adjacentStars.size > 1
-    }).foreach(_ => throw new IllegalArgumentException("Initialized with multiple stars adjacent to a single square"))
+    squares.find(adjacentStars(_).size > 1)
+      .foreach(_ => throw new IllegalArgumentException("Initialized with multiple stars adjacent to a single square"))
+  }
+
+  def adjacentStars(square: Square): Set[Star] = {
+    stars.filter(star => square.adjacentTo(star.coordinate))
   }
 
   override def toString: String = {

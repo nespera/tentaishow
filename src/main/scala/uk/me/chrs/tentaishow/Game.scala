@@ -51,10 +51,13 @@ object Game extends App {
   }
 
   Console.println("Solving:\n")
-  Console.println(game.board.toString)
-  Console.println()
+  Console.println(game.board.toString + "\n")
+  val solved = game.solve
+
   Console.println("Result:\n")
-  Console.println(game.solve.toString)
+  Console.println(solved.toString + "\n")
+
+  Console.println(if (solved.isComplete) "Complete" else "FAILED TO COMPLETE")
 
   def init(board: Board): Game = {
     board.validate()

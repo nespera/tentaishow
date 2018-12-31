@@ -104,21 +104,22 @@ object Game extends App {
     if (next.isComplete || next.countComplete == game.countComplete) next else solveSteps(next)
   }
 
-  private def fillUnique(start: Game): Game = {
-    var game: Game = start
+  private def fillUnique(game: Game): Game = {
+    val emptySquares = game.state.filter(_._2.isEmpty).keys
+    emptySquares.foldLeft(game)(fill)
+  }
 
-    val empty = game.state.filter(_._2.isEmpty).keys
-    for (square <- empty) {
-      val possibleStars = game.reachable(square).filter(star => {
-        game.mirrorIsEmpty(square, star)
-      })
-      if (possibleStars.size == 1){
-        val star = possibleStars.head
-        val mirror = square.rotate(star.coordinate)
-        game = game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
-      }
+  private def fill(game: Game, square: Square): Game = {
+    val possibleStars = game.reachable(square).filter(star => {
+      game.mirrorIsEmpty(square, star)
+    })
+    if (possibleStars.size == 1){
+      val star = possibleStars.head
+      val mirror = square.rotate(star.coordinate)
+      game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
+    } else {
+      game
     }
-    game
   }
 
   def init(board: Board): Game = {

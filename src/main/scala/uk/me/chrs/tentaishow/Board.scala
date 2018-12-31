@@ -138,6 +138,12 @@ case class Square(row: Int, col: Int) {
   def adjacentTo(coord: Coordinate) : Boolean = {
     Math.abs(coord.x - centre.x) <= 1 && Math.abs(coord.y - centre.y) <= 1
   }
+
+  def adjacentTo(square: Square) : Boolean = {
+    val rowOffset = Math.abs(row - square.row)
+    val colOffset = Math.abs(col - square.col)
+    (rowOffset <=1 && colOffset == 0) || (colOffset <=1 && rowOffset == 0)
+  }
 }
 object Square {
   def from(coord: Coordinate): Square = {

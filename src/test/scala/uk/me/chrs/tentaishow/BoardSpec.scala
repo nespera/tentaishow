@@ -121,6 +121,19 @@ class BoardSpec extends Specification {
       Square(1, 1).adjacentTo(Coordinate(2,1)) must beFalse
     }
 
+    "know if it is adjacent to another square" in {
+      Square(1, 1).adjacentTo(Square(1,1)) must beTrue
+      Square(1, 1).adjacentTo(Square(0,1)) must beTrue
+      Square(1, 1).adjacentTo(Square(1,0)) must beTrue
+      Square(1, 1).adjacentTo(Square(2,1)) must beTrue
+      Square(1, 1).adjacentTo(Square(1,2)) must beTrue
+
+      Square(1, 1).adjacentTo(Square(2,2)) must beFalse
+      Square(1, 1).adjacentTo(Square(0,0)) must beFalse
+      Square(1, 1).adjacentTo(Square(1,4)) must beFalse
+      Square(1, 1).adjacentTo(Square(5,1)) must beFalse
+    }
+
     "be able to be rotated about a coordinate" in {
       Square(0,0).rotate(Coordinate(1,1)) mustEqual Square(0,0)
       Square(0,0).rotate(Coordinate(1,2)) mustEqual Square(0,1)

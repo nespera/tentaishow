@@ -135,9 +135,7 @@ object Game extends App {
   }
 
   private def fillIfUnique(game: Game, square: Square): Game = {
-    val possibleStars = game.reachable(square).filter(star => {
-      game.mirrorIsEmpty(square, star)
-    })
+    val possibleStars = possibleStarsFor(square, game)
     if (possibleStars.size == 1){
       val star = possibleStars.head
       val mirror = square.rotate(star.coordinate)
@@ -145,6 +143,12 @@ object Game extends App {
     } else {
       game
     }
+  }
+
+  private def possibleStarsFor(square: Square, game: Game) = {
+    game.reachable(square).filter(star => {
+      game.mirrorIsEmpty(square, star)
+    })
   }
 
   private def solveSteps(game: Game): Option[Game] = {
@@ -157,15 +161,11 @@ object Game extends App {
   }
 
   private def fill(game: Game, square: Square): Option[Game] = {
-
-    val possibleStars = game.reachable(square).filter(star => {
-      game.mirrorIsEmpty(square, star)
-    })
+    val possibleStars = possibleStarsFor(square, game)
     if (possibleStars.isEmpty){
       None
     } else {
       possibleStars.view.flatMap(star => {
-        val star = possibleStars.head
         val mirror = square.rotate(star.coordinate)
         val filled = game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
         solveSteps(filled)

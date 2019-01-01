@@ -118,21 +118,21 @@ object Game extends App {
   Console.println(if (solved.isSolved) "Solved" else "FAILED TO SOLVE")
 
   def solve(game: Game): Game = {
-    solveSteps(game.fillGimmes)
+    fillUniqueSquares(game.fillGimmes)
   }
 
   @tailrec
-  private def solveSteps(game: Game): Game = {
+  private def fillUniqueSquares(game: Game): Game = {
     val next = fillUnique(game)
-    if (next.isFilled || next.countFilled == game.countFilled) next else solveSteps(next)
+    if (next.isFilled || next.countFilled == game.countFilled) next else fillUniqueSquares(next)
   }
 
   private def fillUnique(game: Game): Game = {
     val emptySquares = game.state.filter(_._2.isEmpty).keys
-    emptySquares.foldLeft(game)(fill)
+    emptySquares.foldLeft(game)(fillIfUnique)
   }
 
-  private def fill(game: Game, square: Square): Game = {
+  private def fillIfUnique(game: Game, square: Square): Game = {
     val possibleStars = game.reachable(square).filter(star => {
       game.mirrorIsEmpty(square, star)
     })

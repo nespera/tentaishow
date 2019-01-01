@@ -138,8 +138,7 @@ object Game extends App {
     val possibleStars = possibleStarsFor(square, game)
     if (possibleStars.size == 1){
       val star = possibleStars.head
-      val mirror = square.rotate(star.coordinate)
-      game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
+      fillSquare(game, square, star)
     } else {
       game
     }
@@ -166,11 +165,14 @@ object Game extends App {
       None
     } else {
       possibleStars.view.flatMap(star => {
-        val mirror = square.rotate(star.coordinate)
-        val filled = game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
-        solveSteps(filled)
+        solveSteps(fillSquare(game, square, star))
       }).headOption
     }
+  }
+
+  private def fillSquare(game: Game, square: Square, star: Star): Game = {
+    val mirror = square.rotate(star.coordinate)
+    game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
   }
 
   def init(board: Board): Game = {

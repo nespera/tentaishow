@@ -85,6 +85,12 @@ case class Game(board: Board, state: Map[Square, Option[Star]]) {
     board.contains(mirror) && state(mirror).isEmpty
   }
 
+  def fillSquare(square: Square, star: Star): Game = {
+    val mirror = square.rotate(star.coordinate)
+    copy(state = state ++ Seq(square -> Some(star), mirror -> Some(star)))
+  }
+
+
   private def rowAsString(r: Int): String = {
     val s = new StringBuilder
     for (c <- 0 until board.width) {
@@ -137,8 +143,7 @@ object Game extends App {
   private def fillIfUnique(game: Game, square: Square): Game = {
     val possibleStars = possibleStarsFor(square, game)
     if (possibleStars.size == 1){
-      val star = possibleStars.head
-      fillSquare(game, square, star)
+      game.fillSquare(square, possibleStars.head)
     } else {
       game
     }
@@ -165,14 +170,9 @@ object Game extends App {
       None
     } else {
       possibleStars.view.flatMap(star => {
-        solveSteps(fillSquare(game, square, star))
+        solveSteps(game.fillSquare(square, star))
       }).headOption
     }
-  }
-
-  private def fillSquare(game: Game, square: Square, star: Star): Game = {
-    val mirror = square.rotate(star.coordinate)
-    game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
   }
 
   def init(board: Board): Game = {

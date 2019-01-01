@@ -56,7 +56,8 @@ class GameSpec extends Specification {
 
       val game = Game.init(Board(2, 2, Set(starA, starB)))
 
-      game.isComplete must beFalse
+      game.isFilled must beFalse
+      game.isSolved must beFalse
     }
 
     "Know when it is complete" in {
@@ -66,36 +67,60 @@ class GameSpec extends Specification {
       val newState = game.state.map(x => x._1 -> Some(starA))
       val newGame = game.copy(state = newState)
 
-      newGame.isComplete must beTrue
+      newGame.isFilled must beTrue
+      newGame.isSolved must beTrue
+    }
+
+    "Know when a completed board is invalid" in {
+      val starA = Star("a", White, Coordinate(1,3))
+      val starB = Star("b", White, Coordinate(3,1))
+      val starC = Star("c", White, Coordinate(3,3))
+      val starD = Star("d", White, Coordinate(3,5))
+      val starE = Star("e", White, Coordinate(5,3))
+
+      val game = Game.init(Board(3, 3, Set(starA, starB, starC, starD, starE))).fillGimmes
+      val newState = game.state.map(x => if (x._2.isDefined) x else x.copy(_2 = Some(starC)))
+      val newGame = game.copy(state = newState)
+
+      //·‒‒‒·‒‒‒·‒‒‒·
+      //|  c|  a|  c|
+      //·‒‒‒·‒‒‒·‒‒‒·
+      //|  b|  c|  d|
+      //·‒‒‒·‒‒‒·‒‒‒·
+      //|  c|  e|  c|
+      //·‒‒‒·‒‒‒·‒‒‒·
+
+      newGame.isFilled must beTrue
+      newGame.isSolved must beFalse
     }
 
     "Be able to fill in the initial gimmes (squares adjacent to a star)" in {
       val game = Game.init(Board.parse(Seq("d.", "..")))
-      game.isComplete must beFalse
+      game.isFilled must beFalse
       val withGimmes = game.fillGimmes
-      withGimmes.isComplete must beTrue
+      withGimmes.isFilled must beTrue
     }
 
     "Be able to solve a board that is just gimmes" in {
       val game = Game.init(Board.parse(Seq("cC", "Cc")))
-      game.isComplete must beFalse
+      game.isFilled must beFalse
       val solved = Game.solve(game)
-      solved.isComplete must beTrue
+      solved.isFilled must beTrue
     }
 
     "Be able to solve a board that is gimmes and unique squares" in {
       val game = Game.init(Board.parse(Seq(".C.", ".c.")))
-      game.isComplete must beFalse
+      game.isFilled must beFalse
       val solved = Game.solve(game)
-      solved.isComplete must beTrue
+      solved.isFilled must beTrue
     }
 
     "Be able to solve a board that is not just gimmes and unique squares" in {
       skipped("Doesn't yet work")
       val game = Game.init(Board.parse(Seq("cB...", "..cB.", "....c")))
-      game.isComplete must beFalse
+      game.isFilled must beFalse
       val solved = Game.solve(game)
-      solved.isComplete must beTrue
+      solved.isFilled must beTrue
       val solution = """·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·
                        || a0| b0| c0| c0| c0|
                        |·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·

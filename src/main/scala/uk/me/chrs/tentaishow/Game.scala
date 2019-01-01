@@ -7,9 +7,11 @@ import scala.io.StdIn
 case class Game(board: Board, state: Map[Square, Option[Star]]) {
   import Board._
 
-  def isComplete: Boolean = state.forall(x => x._2.isDefined)
+  def isFilled: Boolean = state.forall(x => x._2.isDefined)
 
-  def countComplete: Int = state.count(x => x._2.isDefined)
+  def isSolved: Boolean = isFilled && isContiguous
+
+  def countFilled: Int = state.count(x => x._2.isDefined)
 
   def fillGimmes: Game = {
     val gimmes = board.squares.map(sq => sq -> board.adjacentStars(sq).headOption)
@@ -37,6 +39,27 @@ case class Game(board: Board, state: Map[Square, Option[Star]]) {
       s.append("\n")
     }
     s.toString()
+  }
+
+  private def isContiguous: Boolean = {
+    board.stars.forall(star => isContiguous(star))
+  }
+
+  private def isContiguous(star: Star): Boolean = {
+    val squares = state.filter(_._2.contains(star)).keys.toSet
+    val joinedToFirst = expandJoined(Set(squares.head), star)
+    joinedToFirst == squares
+  }
+
+  @tailrec
+  private def expandJoined(squares: Set[Square], star: Star): Set[Square] = {
+    val beside = squares.flatMap(board.adjacentSquares).filter(s => state(s).contains(star))
+    val expanded = squares ++ beside
+    if (expanded.size == squares.size){
+      squares
+    } else {
+      expandJoined(expanded, star)
+    }
   }
 
   //Which stars are reachable from the given square, assuming gimmes are already filled?
@@ -92,7 +115,7 @@ object Game extends App {
   Console.println(solved.toString + "\n")
   Console.println(solved.asImage + "\n")
 
-  Console.println(if (solved.isComplete) "Complete" else "FAILED TO COMPLETE")
+  Console.println(if (solved.isSolved) "Solved" else "FAILED TO SOLVE")
 
   def solve(game: Game): Game = {
     solveSteps(game.fillGimmes)
@@ -101,7 +124,7 @@ object Game extends App {
   @tailrec
   private def solveSteps(game: Game): Game = {
     val next = fillUnique(game)
-    if (next.isComplete || next.countComplete == game.countComplete) next else solveSteps(next)
+    if (next.isFilled || next.countFilled == game.countFilled) next else solveSteps(next)
   }
 
   private def fillUnique(game: Game): Game = {

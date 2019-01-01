@@ -85,3 +85,9 @@ Result:
 Complete
 
 ```
+
+The method used is :
+- First of all fill in the "gimmes" which are squares directly next to a star.
+- Then repeatedly look for squares that can only be associated with one star, by looking at stars that can
+  be reached and where the "mirror" square is also available.
+- Finally a recursive search is operated trying each choice of star in turn looking for a solution.

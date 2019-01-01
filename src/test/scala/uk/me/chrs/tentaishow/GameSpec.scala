@@ -90,6 +90,21 @@ class GameSpec extends Specification {
       solved.isComplete must beTrue
     }
 
+    "Be able to solve a board that is not just gimmes and unique squares" in {
+      val game = Game.init(Board.parse(Seq("cB...", "..cB.", "....c")))
+      game.isComplete must beFalse
+      val solved = Game.solve(game)
+      solved.isComplete must beTrue
+      val solution = """·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·
+                       || a0| b0| c0| c0| c0|
+                       |·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·
+                       || c0| b0| c0| d0| c0|
+                       |·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·
+                       || c0| c0| c0| d0| e0|
+                       |·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·
+                       |"""
+      solved.toString mustEqual solution.stripMargin}
+
     "Be able to calculate reachable stars from a square" in {
       val game = Game.init(Board.parse(Seq("cc.", ".c."))).fillGimmes
       val starA = game.board.adjacentStars(Square(0, 0)).head

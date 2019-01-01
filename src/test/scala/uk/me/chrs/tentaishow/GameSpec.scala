@@ -79,14 +79,14 @@ class GameSpec extends Specification {
     "Be able to solve a board that is just gimmes" in {
       val game = Game.init(Board.parse(Seq("cC", "Cc")))
       game.isComplete must beFalse
-      val solved = Game.solve(game)
+      val solved = Game.solve(game).get
       solved.isComplete must beTrue
     }
 
     "Be able to solve a board that is gimmes and unique squares" in {
       val game = Game.init(Board.parse(Seq(".C.", ".c.")))
       game.isComplete must beFalse
-      val solved = Game.solve(game)
+      val solved = Game.solve(game).get
       solved.isComplete must beTrue
     }
 

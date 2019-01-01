@@ -86,39 +86,48 @@ object Game extends App {
 
   Console.println("Solving:\n")
   Console.println(game.board.toString + "\n")
-  val solved = Game.solve(game)
+  val possibleSolution = Game.solve(game)
 
-  Console.println("Result:\n")
-  Console.println(solved.toString + "\n")
-  Console.println(solved.asImage + "\n")
+  possibleSolution.foreach(solved =>
+  {
+    Console.println("Result:\n")
+    Console.println(solved.toString + "\n")
+    Console.println(solved.asImage + "\n")
+    Console.println("Complete")
+  })
 
-  Console.println(if (solved.isComplete) "Complete" else "FAILED TO COMPLETE")
+  if(possibleSolution.isEmpty){
+    Console.println("FAILED TO COMPLETE")
+  }
 
-  def solve(game: Game): Game = {
+  def solve(game: Game): Option[Game] = {
     solveSteps(game.fillGimmes)
   }
 
-  @tailrec
-  private def solveSteps(game: Game): Game = {
-    val next = fillUnique(game)
-    if (next.isComplete || next.countComplete == game.countComplete) next else solveSteps(next)
-  }
-
-  private def fillUnique(game: Game): Game = {
+  private def solveSteps(game: Game): Option[Game] = {
     val emptySquares = game.state.filter(_._2.isEmpty).keys
-    emptySquares.foldLeft(game)(fill)
+    if (emptySquares.isEmpty) {
+      //Check for validity here
+      Some(game)
+    } else {
+      fill(game, emptySquares.head)
+    }
   }
 
-  private def fill(game: Game, square: Square): Game = {
+  private def fill(game: Game, square: Square): Option[Game] = {
+
     val possibleStars = game.reachable(square).filter(star => {
       game.mirrorIsEmpty(square, star)
     })
-    if (possibleStars.size == 1){
-      val star = possibleStars.head
-      val mirror = square.rotate(star.coordinate)
-      game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
+    if (possibleStars.isEmpty){
+      None
     } else {
-      game
+      possibleStars.view.flatMap(star => {
+        val star = possibleStars.head
+        val mirror = square.rotate(star.coordinate)
+        val filled = game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
+        solveSteps(filled)
+      }).headOption
     }
   }
 

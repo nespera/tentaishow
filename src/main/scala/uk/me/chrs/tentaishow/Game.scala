@@ -85,11 +85,10 @@ case class Game(board: Board, state: Map[Square, Option[Star]]) {
     board.contains(mirror) && state(mirror).isEmpty
   }
 
-  def fillSquare(square: Square, star: Star): Game = {
+  def fill(square: Square, star: Star): Game = {
     val mirror = square.rotate(star.coordinate)
     copy(state = state ++ Seq(square -> Some(star), mirror -> Some(star)))
   }
-
 
   private def rowAsString(r: Int): String = {
     val s = new StringBuilder
@@ -123,6 +122,12 @@ object Game extends App {
 
   Console.println(if (solved.isSolved) "Solved" else "FAILED TO SOLVE")
 
+  def init(board: Board): Game = {
+    board.validate()
+    val initState = board.squares.map(sq => (sq, None)).toMap
+    Game(board, initState)
+  }
+
   def solve(game: Game): Game = {
     val withUnique = fillUniqueSquares(game.fillGimmes)
     val solved = solveSteps(withUnique)
@@ -143,7 +148,7 @@ object Game extends App {
   private def fillIfUnique(game: Game, square: Square): Game = {
     val possibleStars = possibleStarsFor(square, game)
     if (possibleStars.size == 1){
-      game.fillSquare(square, possibleStars.head)
+      game.fill(square, possibleStars.head)
     } else {
       game
     }
@@ -165,20 +170,9 @@ object Game extends App {
   }
 
   private def fill(game: Game, square: Square): Option[Game] = {
-    val possibleStars = possibleStarsFor(square, game)
-    if (possibleStars.isEmpty){
-      None
-    } else {
-      possibleStars.view.flatMap(star => {
-        solveSteps(game.fillSquare(square, star))
-      }).headOption
-    }
-  }
-
-  def init(board: Board): Game = {
-    board.validate()
-    val initState = board.squares.map(sq => (sq, None)).toMap
-    Game(board, initState)
+    possibleStarsFor(square, game).view.flatMap(star => {
+      solveSteps(game.fill(square, star))
+    }).headOption
   }
 
   private def readLinesFromStdIn: Seq[String] = {

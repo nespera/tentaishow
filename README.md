@@ -2,7 +2,7 @@
 
 This is code to solve [Tentai Show](http://nikoli.co.jp/en/puzzles/astronomical_show.html) puzzles.
 
-To run it to solve the game in the file game1.txt:
+To run it you need to have Java installed, then to solve the game in the file game1.txt, do the following:
 
 ```
 > ./sbt "runMain uk.me.chrs.tentaishow.Game" < game1.txt

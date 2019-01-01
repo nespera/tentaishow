@@ -19,7 +19,8 @@ represent black stars and lower case letters represent white stars. The characte
 It gives output like the following, showing first the star map. Then a map showing 
 how each square is associated with a star (the stars are named a0, b0, etc). Finally the
 puzzle is rendered as an "image" with the squares associated with a black star shown in 
-black.
+black (this uses ANSI terminal colours to work).
+
 ```
 Solving:
 
@@ -69,22 +70,9 @@ Result:
 | o1| o1| l1| l1| l1| p1| p1| p1| n1| n1|
 ·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·‒‒‒·
 
-
-□ ■ ■ □ □ □ ■ ■ □ □ 
-■ □ □ ■ □ ■ □ □ ■ ■ 
-■ □ □ ■ ■ ■ □ □ ■ □ 
-□ ■ ■ ■ □ ■ ■ ■ □ □ 
-□ □ □ ■ □ ■ □ □ □ □ 
-□ □ ■ □ □ □ ■ □ □ □ 
-□ □ ■ □ □ □ ■ □ □ □ 
-■ □ □ ■ ■ ■ □ □ ■ □ 
-□ ■ ■ □ □ □ ■ ■ □ □ 
-□ □ □ □ □ □ □ □ □ □ 
-
-
-Complete
-
 ```
+
+![Solution Image](tentai_image.png?raw=true)
 
 The method used is :
 - First of all fill in the "gimmes" which are squares directly next to a star.

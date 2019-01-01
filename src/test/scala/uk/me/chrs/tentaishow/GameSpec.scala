@@ -116,7 +116,6 @@ class GameSpec extends Specification {
     }
 
     "Be able to solve a board that is not just gimmes and unique squares" in {
-      skipped("Doesn't yet work")
       val game = Game.init(Board.parse(Seq("cB...", "..cB.", "....c")))
       game.isFilled must beFalse
       val solved = Game.solve(game)

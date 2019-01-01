@@ -118,7 +118,9 @@ object Game extends App {
   Console.println(if (solved.isSolved) "Solved" else "FAILED TO SOLVE")
 
   def solve(game: Game): Game = {
-    fillUniqueSquares(game.fillGimmes)
+    val withUnique = fillUniqueSquares(game.fillGimmes)
+    val solved = solveSteps(withUnique)
+    solved.getOrElse(withUnique)
   }
 
   @tailrec
@@ -142,6 +144,32 @@ object Game extends App {
       game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
     } else {
       game
+    }
+  }
+
+  private def solveSteps(game: Game): Option[Game] = {
+    if (game.isFilled) {
+      if (game.isSolved) Some(game) else None
+    } else {
+      val emptySquares = game.state.filter(_._2.isEmpty).keys
+      fill(game, emptySquares.head)
+    }
+  }
+
+  private def fill(game: Game, square: Square): Option[Game] = {
+
+    val possibleStars = game.reachable(square).filter(star => {
+      game.mirrorIsEmpty(square, star)
+    })
+    if (possibleStars.isEmpty){
+      None
+    } else {
+      possibleStars.view.flatMap(star => {
+        val star = possibleStars.head
+        val mirror = square.rotate(star.coordinate)
+        val filled = game.copy(state = game.state ++ Seq(square -> Some(star), mirror -> Some(star)))
+        solveSteps(filled)
+      }).headOption
     }
   }
 

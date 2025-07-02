@@ -1,6 +1,6 @@
 # Tentai Show
 
-This is code to solve [Tentai Show](http://nikoli.co.jp/en/puzzles/astronomical_show.html) puzzles.
+This is code to solve [Tentai Show](https://www.nikoli.co.jp/en/puzzles/tentai_show/) puzzles.
 
 To run it you need to have Java installed, then to solve the game in the file game1.txt, do the following:
 
